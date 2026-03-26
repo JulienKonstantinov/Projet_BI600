@@ -53,7 +53,16 @@ def degre(graphe) :
 
     return degre
 
-
+def nombre_aretes(graphe):
+    '''Calcule le nombre d'arêtes dans le graphe'''
+    nombre = 0
+    sommets_visites = set()
+    for sommet, voisins in graphe.items():
+        for voisin in voisins:
+            if (voisin, sommet) not in sommets_visites and sommet != voisin: # pour éviter de compter deux fois la même arete
+                sommets_visites.add((sommet, voisin))
+                nombre += 1
+    return nombre
 
 
 
