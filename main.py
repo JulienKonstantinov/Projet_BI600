@@ -33,6 +33,12 @@ if __name__ == "__main__":
     print("\nDegré des noeuds dans la copie : ")
     print(f.degre(g2))
 
+    print("\nNombre d'arêtes dans le graphe original")
+    print(f.nombre_aretes(g))
+
+    print("\nNombre d'arêtes dans la copie")
+    print(f.nombre_aretes(g2))
+
 
 #Pour l'instant pour le test j'utilise A,B,C,D avec A-B,  A-C et C-D.  Quand t'excecutes le code ca va te demander de mettre les sommets tu les mets chacun espacé d'un espace du style : A B C D 
 #Ensuite tu mets les arêtes une à une en mettant entrée à chaque fois, genre : A-B entrée, A-C entrée... et quand c'est fini tu mets 0 entrée
