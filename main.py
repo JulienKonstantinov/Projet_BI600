@@ -39,6 +39,16 @@ if __name__ == "__main__":
     print("\nNombre d'arêtes dans la copie")
     print(f.nombre_aretes(g2))
 
+    print("\nParcours en largeur depuis A :")
+    print(f.bfs(g,"A"))
+
+    print("\nPlus court chemin depuis A :")
+    print(f.plus_court_chemin(g, "A"))
+
+    print("\nParcours en profondeur du graphe")
+    print(f.compo_connexe(g))
+    
+    
 
 #Pour l'instant pour le test j'utilise A,B,C,D avec A-B,  A-C et C-D.  Quand t'excecutes le code ca va te demander de mettre les sommets tu les mets chacun espacé d'un espace du style : A B C D 
 #Ensuite tu mets les arêtes une à une en mettant entrée à chaque fois, genre : A-B entrée, A-C entrée... et quand c'est fini tu mets 0 entrée

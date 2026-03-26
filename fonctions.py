@@ -66,6 +66,7 @@ def nombre_aretes(graphe):
                 nombre += 1
     return nombre
 
+
 def bfs(graphe, source):
     '''Effectue un parcours en largeur (BFS) à partir d' un noeud source'''
     #Initialisation
@@ -89,6 +90,7 @@ def bfs(graphe, source):
 
     return distances, predecessseurs
 
+
 def plus_court_chemin(graphe, source):
     '''Calcule les plus courts chemins depuis un nœud source vers tous les autres noeuds'''
     #Initialisation  
@@ -109,13 +111,14 @@ def plus_court_chemin(graphe, source):
                     file.append(voisin)
 
     return distances, nombre_chemins, predecessseurs
-    
+
+
 def compo_connexe(graphe):
     deja_visite=set()
     compo=[]
     
     def profondeur(noeud, compo_2):
-        '''On fait le parcoure en profondeur pour voir tous les noeuds'''
+        '''On fait le parcours en profondeur pour voir tous les noeuds'''
         deja_visite.add(noeud)
         compo_2.append(noeud)
         for voisin in graphe[noeud]:
