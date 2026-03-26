@@ -65,4 +65,22 @@ def nombre_aretes(graphe):
     return nombre
 
 
+def compo_connexe(graphe):
+    deja_visite=set()
+    compo=[]
+    
+    def profondeur(noeud, compo_2):
+        '''On fait le parcoure en profondeur pour voir tous les noeuds'''
+        deja_visite.add(noeud)
+        compo_2.append(noeud)
+        for voisin in graphe[noeud]:
+            if voisin not in deja_visite:
+                profondeur(voisin, compo_2)
 
+    for sommet in graphe:
+        if sommet not in deja_visite:
+            compo_2 = []
+            profondeur(sommet, compo_2)
+            compo.append(compo_2)
+
+    return compo
