@@ -48,7 +48,9 @@ if __name__ == "__main__":
     print("\nParcours en profondeur du graphe")
     print(f.compo_connexe(g))
     
-    
+    print("\nVoisins communs entre A et D")
+    print(f.voisins_communs(g, "A", "D"))
+
 
 #Pour l'instant pour le test j'utilise A,B,C,D avec A-B,  A-C et C-D.  Quand t'excecutes le code ca va te demander de mettre les sommets tu les mets chacun espacé d'un espace du style : A B C D 
 #Ensuite tu mets les arêtes une à une en mettant entrée à chaque fois, genre : A-B entrée, A-C entrée... et quand c'est fini tu mets 0 entrée

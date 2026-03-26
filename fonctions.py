@@ -132,3 +132,17 @@ def compo_connexe(graphe):
             compo.append(compo_2)
 
     return compo
+
+
+def voisins_communs(graphe, u, v) : 
+    '''Renvoi les voisins communs entre deux sommets'''
+    if u not in graphe or v not in graphe:   #on vérifie que les 2 sommets sont dans le graphe
+        return set()
+    
+    communs = set()
+    
+    for voisin in graphe[u]:     #on doit parcourir chaque voisin de u et verifier si c'est aussi un voisin de v
+        if voisin in graphe[v]:
+            communs.add(voisin)  #si c'est le cas on l'ajoute
+    
+    return communs
