@@ -1,3 +1,5 @@
+from collections import deque # pour FIFO
+
 def creer_graphe() : 
     '''Fonction qui demande à l'utilisateur les sommets et les arêtes et retourne le graphe'''
     #On implémente un graphe non orienté
@@ -64,7 +66,50 @@ def nombre_aretes(graphe):
                 nombre += 1
     return nombre
 
+def bfs(graphe, source):
+    '''Effectue un parcours en largeur (BFS) à partir d' un noeud source'''
+    #Initialisation
+    distances = {sommet: float('inf') for sommet in graphe} # def distances (inf)
+    predecessseurs = {sommet: [] for sommet in graphe}  #liste des prédecessuers (vide)
 
+    distances[source] = 0 #def source distance à 0
+
+    file = deque([source])  #on utilise FIFO pour les noeuds, avec source en fond de pile
+
+    while file:# tant que la pile n'est pas vide
+        sommet_courant = file.popleft() #extrait le premier nœud de la file avec popleft()
+
+        for voisin in graphe[sommet_courant]:
+            if distances[voisin] == float('inf'): #si jamais vu le voisin, c'est un chemin plus court
+                distances[voisin] = distances[sommet_courant] + 1
+                predecessseurs[voisin] = [sommet_courant]
+                file.append(voisin)
+            elif distances[voisin] == distances[sommet_courant] + 1:
+                predecessseurs[voisin].append(sommet_courant)
+
+    return distances, predecessseurs
+
+def plus_court_chemin(graphe, source):
+    '''Calcule les plus courts chemins depuis un nœud source vers tous les autres noeuds'''
+    #Initialisation  
+    distances, predecessseurs = bfs(graphe, source) #on prend BFS pour avoir les plus courts chemins
+    nombre_chemins = {sommet: 0 for sommet in graphe} #le nombre de chemins à 0 pour tous
+    nombre_chemins[source] = 1  #le nombre de chemins à 1 pour source (chemin vide)
+
+    file = deque([source])  #on utilise FIFO pour les noeuds, avec source en fond de pile
+
+    while file:
+        sommet_courant = file.popleft()
+        for voisin in graphe[sommet_courant]:
+            #si voisin distance égale à distances[sommet_courant]+1 alors nœud courant permet un plus court chemin vers ce voisin.
+            if distances[voisin] == distances[sommet_courant] + 1:  
+                nombre_chemins[voisin] += nombre_chemins[sommet_courant]
+                #Si nb chemin vers voisin égal au nb chemins du nœud courant alors nouveau chemin vers ce voisin depuis nœud courant
+                if nombre_chemins[voisin] == nombre_chemins[sommet_courant]:
+                    file.append(voisin)
+
+    return distances, nombre_chemins, predecessseurs
+    
 def compo_connexe(graphe):
     deja_visite=set()
     compo=[]
