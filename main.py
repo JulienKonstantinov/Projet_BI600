@@ -1,6 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 from chargement import charger_fichier, chemin
+from lpa import *
 
 G = charger_fichier(chemin)
 
@@ -32,3 +33,36 @@ nx.draw_networkx_labels(G_final, pos, font_size=3.8, font_color="black")
 plt.title("Réseau d'interactions protéiques de S.cerevisiae", fontsize=15)
 plt.axis("off")
 plt.show()
+
+
+G_test = nx.Graph()
+G_test.add_edges_from([("A", "B"), ("A", "C"), ("B", "C"), ("C", "D")])
+
+labels = initialize_labels(G_test)
+print("-Test initialisation labels-")
+print(labels)
+print("Nb étiquettes == Nb noeuds :", len(labels) == G_test.number_of_nodes())
+print("Toutes distinctes :", len(set(labels.values())) == len(labels))
+
+# Test get_neighbor_labels
+print("\n-Test plus proches voisins-")
+print("Voisins de A :", get_neighbor_labels(G_test, "A", labels))
+print("Voisins de D :", get_neighbor_labels(G_test, "D", labels))
+
+#Test most_frequent_labes
+print("-Test most_frequent_label-")
+print(most_frequent_label(["A", "B", "A", "C", "A"]))  #attendu : A
+print(most_frequent_label(["A", "B", "A", "B"]))        #attendu : A ou B (aléatoire)
+print(most_frequent_label([]))                           #attendu : None
+
+
+print("-Test update_labels_async-")
+G_test = nx.Graph()
+G_test.add_edges_from([("A", "B"), ("A", "C"), ("B", "C"), ("C", "D")])
+
+labels = initialize_labels(G_test)
+print("Avant :", labels)
+labels = update_labels_async(G_test, labels)
+print("Après 1 itération :", labels)
+labels = update_labels_async(G_test, labels)
+print("Après 2 itérations :", labels)
