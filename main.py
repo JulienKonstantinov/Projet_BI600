@@ -1,59 +1,34 @@
-import fonctions as f
+import networkx as nx
+import matplotlib.pyplot as plt
+from chargement import charger_fichier, chemin
 
-if __name__ == "__main__":
-    g = f.creer_graphe()      
-    
-    print("\nGraphe original :")
-    f.afficher_graphe(g)    
+G = charger_fichier(chemin)
 
-    g2 = f.copier_graphe(g)
+print("Avant filtrage (toutes les composantes) :")
+print("Nombre de noeuds :", G.number_of_nodes())
+print("Nombre d'arêtes :", G.number_of_edges(), "\n")
 
-    print("\nCopie du graphe :")
-    f.afficher_graphe(g2)
+composante_large = max(nx.connected_components(G), key=len)
+G = G.subgraph(composante_large).copy()
 
-    g2['A'].append('D')
-    g2['D'].append('A')
+print("Après filtrage (composante principale) :")
+print("Nombre de noeuds :", G.number_of_nodes())
+print("Nombre d'arêtes :", G.number_of_edges(), "\n")
 
-    print("\nAprès modification de la copie :")
-    print("Original :")
-    f.afficher_graphe(g)
+G_final = nx.k_core(G, k=2)
+print("Après réduction :")
+print("Nombre de noeuds :", G_final.number_of_nodes(), "\n")
 
-    print("Copie :")
-    f.afficher_graphe(g2)
+pos = nx.spring_layout(G_final, k=0.15, iterations=50)
+node_sizes = [G_final.degree(n) * 10 for n in G_final.nodes()]
 
-    print("\nVoisins de A dans le graphe original :")
-    print(f.voisins(g, "A"))
+plt.figure(figsize=(12, 12))
 
-    print("\nVoisins de A dans la copie :")
-    print(f.voisins(g2, "A")) 
+nx.draw_networkx_nodes(G_final, pos, node_size=node_sizes,
+                       node_color="skyblue", alpha=0.8)
+nx.draw_networkx_edges(G_final, pos, edge_color="gray", alpha=0.3)
+nx.draw_networkx_labels(G_final, pos, font_size=3.8, font_color="black")
 
-    print("\nDegré des noeuds dans le graphe original : ")
-    print(f.degre(g))
-
-    print("\nDegré des noeuds dans la copie : ")
-    print(f.degre(g2))
-
-    print("\nNombre d'arêtes dans le graphe original")
-    print(f.nombre_aretes(g))
-
-    print("\nNombre d'arêtes dans la copie")
-    print(f.nombre_aretes(g2))
-
-    print("\nParcours en largeur depuis A :")
-    print(f.bfs(g,"A"))
-
-    print("\nPlus court chemin depuis A :")
-    print(f.plus_court_chemin(g, "A"))
-
-    print("\nParcours en profondeur du graphe")
-    print(f.compo_connexe(g))
-    
-    print("\nVoisins communs entre A et D")
-    print(f.voisins_communs(g, "A", "D"))
-
-
-#Pour l'instant pour le test j'utilise A,B,C,D avec A-B,  A-C et C-D.  Quand t'excecutes le code ca va te demander de mettre les sommets tu les mets chacun espacé d'un espace du style : A B C D 
-#Ensuite tu mets les arêtes une à une en mettant entrée à chaque fois, genre : A-B entrée, A-C entrée... et quand c'est fini tu mets 0 entrée
-#Pour l'instant le programme affiche le graphe de base et une copie, ensuite il rajoute un lien A-D dans la copie pour qu'on confirme que ca n'a pas changé le graphe initial
-#Ensuite ca affiche tout les voisins de A dans les 2 graphes 
-#A la fin ca affiche le degré de chaque noeud dans le graphe de base et la copie
+plt.title("Réseau d'interactions protéiques de S.cerevisiae", fontsize=15)
+plt.axis("off")
+plt.show()
