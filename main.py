@@ -2,6 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from chargement import charger_fichier, chemin
 from lpa import *
+from agregation import *
 
 G = charger_fichier(chemin)
 
@@ -110,3 +111,25 @@ print("-Test get_communities-")
 labels_test = {"A": "X", "B": "X", "C": "Y", "D": "Y"}
 print(get_communities(labels_test))
 # attendu : [['A', 'B'], ['C', 'D']]
+
+
+
+print("-Test aggregate_solution-")
+G_zachary = nx.karate_club_graph()
+sol1 = label_propagation(G_zachary)
+sol2 = label_propagation(G_zachary)
+print("Sol 1 :", len(set(sol1.values())), "communautés")
+print("Sol 2 :", len(set(sol2.values())), "communautés")
+
+agregat = aggregate_solution(G_zachary, sol1, sol2)
+print("Agrégat :", len(set(agregat.values())), "communautés")
+
+
+print("-Test run_multiple_and_aggregate-")
+G_zachary = nx.karate_club_graph()
+agregat = run_multiple_and_aggregate(G_zachary, n=5)
+print("Nombre de communautés Karaté après agrégat de 5 runs :", len(set(agregat.values())))
+
+# Sur le vrai PPI
+agregat_ppi = run_multiple_and_aggregate(G_final, n=5)
+print("Nombre de communautés PPI après agrégat de 5 runs :", len(set(agregat_ppi.values())))
