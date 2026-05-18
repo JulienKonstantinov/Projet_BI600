@@ -66,3 +66,14 @@ labels = update_labels_async(G_test, labels)
 print("Après 1 itération :", labels)
 labels = update_labels_async(G_test, labels)
 print("Après 2 itérations :", labels)
+
+print("-Test check_stop_criterion-")
+G_test = nx.Graph()
+G_test.add_edges_from([("A", "B"), ("A", "C"), ("B", "C"), ("C", "D")])
+#Cas convergé (on sait que après 2 itérations tout est C)
+labels_ok = {"A": "C", "B": "C", "C": "C", "D": "C"}
+print("Cas convergé :", check_stop_criterion(G_test, labels_ok))  # attendu : True
+
+# Cas non convergé
+labels_nok = {"A": "A", "B": "B", "C": "C", "D": "D"}
+print("Cas non convergé :", check_stop_criterion(G_test, labels_nok))  # attendu : False

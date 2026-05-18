@@ -42,3 +42,21 @@ def update_labels_async(G, labels) :
             labels[i] = nouvelle_etiquette
     
     return labels
+
+
+def check_stop_criterion(G, labels) : 
+    """Test le cirtère d'arret, s'arrete si diCm ≥ diCj"""
+    
+    for noeud in G.nodes() :   #on parcourt tout les noeuds du graphe
+        etiquette_actuelle = labels[noeud]  #On récupère l'étiquette que porte ce nœud en ce moment dans le dico.
+        voisins_labels = get_neighbor_labels(G,noeud,labels)  #on recupure la liste des etiquettes de ses voisins
+ 
+        if not voisins_labels :   #si le nœud n'a aucun voisin, on passe au suivant, rien à vérifier
+            continue
+        
+        if most_frequent_label(voisins_labels) != etiquette_actuelle :  #on recupère l'étiquette majoritaire chez les voisins, si est différente de l'étiquette actuelle du nœud on retourne False immédiatement sans même regarder les autres nœuds
+            return False
+        
+    return True    #Si on est arrivé jusqu'ici sans jamais retourner False, c'est que tous les nœuds satisfont le critère, donc on retourne True   
+
+        
