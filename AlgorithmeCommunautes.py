@@ -1,7 +1,10 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import os
 
-chemin = "/Users/julienkonstantinov/Documents/ProjetL3/Scere20071021.txt"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+chemin = os.path.join(BASE_DIR, "Scere20071021.txt")
+
 G = nx.Graph()
 
 def charger_fichier(chemin):
