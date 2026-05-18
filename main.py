@@ -77,3 +77,36 @@ print("Cas convergé :", check_stop_criterion(G_test, labels_ok))  # attendu : T
 # Cas non convergé
 labels_nok = {"A": "A", "B": "B", "C": "C", "D": "D"}
 print("Cas non convergé :", check_stop_criterion(G_test, labels_nok))  # attendu : False
+
+
+print("-Test label_propagation sur Zachary (5 runs)-")
+G_zachary = nx.karate_club_graph()
+for i in range(5):
+    labels_zachary = label_propagation(G_zachary)
+    print(f"Run {i+1} : {len(set(labels_zachary.values()))} communautés")
+
+
+#Notre vrai test sur le fichier PPi
+print("-Test label_propagation sur PPI (5 runs)-")
+for i in range(5):
+    labels_ppi = label_propagation(G_final)
+    print(f"Run {i+1} : {len(set(labels_ppi.values()))} communautés")
+
+
+print("-Test split_disconnected_communities-")
+G_test = nx.Graph()
+G_test.add_edges_from([("A", "B"), ("C", "D")])  # 2 composantes déconnectées
+
+# On force la même étiquette sur les deux composantes
+labels_test = {"A": "X", "B": "X", "C": "X", "D": "X"}
+print("Avant :", labels_test)
+
+labels_test = split_disconnected_communities(G_test, labels_test)
+print("Après :", labels_test)
+# attendu : A et B gardent X, C et D reçoivent une nouvelle étiquette
+
+
+print("-Test get_communities-")
+labels_test = {"A": "X", "B": "X", "C": "Y", "D": "Y"}
+print(get_communities(labels_test))
+# attendu : [['A', 'B'], ['C', 'D']]

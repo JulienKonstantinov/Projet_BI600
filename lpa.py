@@ -1,5 +1,6 @@
-from collections import Counter
+from collections import Counter, defaultdict
 import random
+import networkx as nx
 
 def initialize_labels(G):
     """Chaque noeud du graphe recoit comme étiquette son propre ID (en gros on génère un dictionnaire de la forme {noeud : étiquette})"""
@@ -60,3 +61,53 @@ def check_stop_criterion(G, labels) :
     return True    #Si on est arrivé jusqu'ici sans jamais retourner False, c'est que tous les nœuds satisfont le critère, donc on retourne True   
 
         
+def label_propagation(G, max_iter= 100) :
+    """Fonction principale qui prend en entrée notre graphe G et retourne le dico {noeud : communauté}"""
+
+    labels = initialize_labels(G)  #chaque noeud recoit comme étiquette son propre ID
+
+    for i in range(0, max_iter) :  #tant qu'on dépasse pas le max d'itération on met à jour l'étiquette selon les voisins
+        labels = update_labels_async(G,labels) 
+
+        if check_stop_criterion(G,labels):   #si on atteint le critère d'arrete on s'arrete
+            break
+
+    return labels
+
+
+def split_disconnected_communities(G, labels) : 
+    """Apres la convergence la fonction detecte les grp de noeuds
+      ayant la meme etiquette mais deconnectés du reste du groupe, 
+      on sépare via BFS et donne de nouvelles etiquette"""
+    
+    groupes = {}
+    for noeud, etiquette in labels.items() :  #on construit un dico {etquette : noeud} pour savoir quels noeuds ont la meme etiquette
+        if etiquette not in groupes :
+            groupes[etiquette] = []
+        groupes[etiquette].append(noeud)
+
+    for etiquette, j in groupes.items() :  #pour chaque groupe on extrait le sous-graphe qui contient uniquement ces nœuds et les arêtes entre eux
+        sous_graphe = G.subgraph(j)
+        
+        if not nx.is_connected(sous_graphe) :  #on vérifie si ce sous-graphe est connexe, si c'est pas le cas il faut séparer
+            composantes = list(nx.connected_components(sous_graphe))  #on récupère toutes les composantes connexes de ce sous-graphe déconnecté
+
+            for composante in composantes[1:]:   #on parcourt toutes les composantes sauf la première qui garde son étiquette originale
+                nouvelle_etiquette = list(composante)[0]
+                for noeud in composante:
+                    labels[noeud] = nouvelle_etiquette #on prend le premier nœud de la composante comme nouvelle étiquette unique, et on la réassigne à tous les nœuds de cette composante
+    
+    return labels
+
+
+def get_communities(labels) :
+    """Regroupe les noeuds par étiquette et retourne notre liste des communautés"""
+
+    groupes = defaultdict(list)   #on crée un dico vide et chaque nouvelle clé aura automatiquement une liste vide
+    
+    for noeud, etiquette in labels.items() :  #on parcourt tout les noeuds et on ajoute les noeuds dans la liste correspondant a leur etiquette
+        groupes[etiquette].append(noeud) 
+    
+    resultat = list(groupes.values())  #on récupère les listes de noeuds
+
+    return resultat
